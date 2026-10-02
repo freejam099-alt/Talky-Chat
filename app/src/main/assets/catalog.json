@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local://catalog/chat-thread",
+  "title": "A2UI Chat Thread Catalog",
+  "version": "1.0",
+  "components": {
+    "ChatThread": {
+      "type": "object",
+      "description": "Native Compose chat thread reimplementation based on the UIArc ChatThread interaction model.",
+      "allowedParents": [
+        "Surface"
+      ],
+      "props": {
+        "participants": "data path to participant array",
+        "currentUserId": "data path or literal string",
+        "messages": "data path to message array",
+        "typing": "data path to participant ids",
+        "readBy": "data path to participantId -> messageId",
+        "reactions": "data path to emoji array",
+        "groupWindow": "milliseconds",
+        "locale": "BCP-47 locale tag",
+        "placeholder": "composer placeholder",
+        "composer": "boolean",
+        "allowAttachments": "boolean",
+        "voiceNote": "boolean; renders the native Bencho VoiceNote interaction in the composer",
+        "botAvatarFallback": "missing participant.avatar URLs fall back to native BotAvatar using deterministic type/seed/state"
+      }
+    },
+    "ReorderList": {
+      "type": "object",
+      "description": "Native Compose port of Bencho ReorderList / Arrange liquid reorder interaction.",
+      "allowedParents": [
+        "Surface"
+      ],
+      "props": {
+        "people": "data path to array of {id,name,here,tint,avatarType,avatarFace,avatarState,avatarSeed}",
+        "give": "integer 0..100; held-row deformation strength",
+        "lean": "integer 0..100; held-row tilt strength",
+        "step": "dp row pitch; default 50",
+        "corner": "dp corner radius; default 22"
+      }
+    },
+    "IconBar": {
+      "type": "object",
+      "description": "Native Compose floating navigation bar port of Bencho IconBar with elastic two-phase selection indicator.",
+      "allowedParents": [
+        "Surface"
+      ],
+      "props": {
+        "items": "data path to array of {key,label,icon}; icon uses local Hugeicons resources",
+        "glyph": "dp icon size; default 17",
+        "axis": "row or column; default row",
+        "dilate": "integer 0..100; how much the indicator spans the union while moving",
+        "bounce": "integer 0..100; elastic overshoot strength, 50 is the tuned value",
+        "speed": "integer 0..100; animation speed, 50 is the tuned value",
+        "hug": "dp inner padding; default 7",
+        "slot": "dp icon slot; default 38",
+        "gap": "dp gap between slots; default 4",
+        "corner": "dp corner radius; capped at 26 by the original geometry"
+      }
+    }
+  }
+}
