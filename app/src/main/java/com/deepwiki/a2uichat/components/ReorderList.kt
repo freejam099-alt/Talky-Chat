@@ -27,12 +27,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.foundation.gestures.changedToCancel
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -140,7 +140,7 @@ private fun Modifier.captureReorderGestures(
             val event = awaitPointerEvent()
             val change = event.changes.firstOrNull { it.id == down.id } ?: break
             when {
-                change.changedToCancel() -> {
+                !change.pressed && !change.changedToUp() -> {
                     onEnd(rowId)
                     break
                 }
@@ -274,7 +274,6 @@ fun ReorderList(
                         .graphicsLayer {
                             scaleX = if (isHeld) wide else 1f
                             scaleY = if (isHeld) squash else 1f
-                            skewY = if (isHeld) tilt else 0f
                         }
                         .clip(RoundedCornerShape(pillCorner))
                         .background(blobColor),

@@ -48,10 +48,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.awaitPointerEvent
-import androidx.compose.foundation.gestures.changedToCanceled
 import androidx.compose.ui.input.pointer.changedToUp
-import androidx.compose.ui.input.pointer.consume
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -182,7 +179,6 @@ private fun VoiceWave(
                         val event = awaitPointerEvent()
                         val change = event.changes.firstOrNull() ?: continue
                         when {
-                            change.changedToCanceled() -> break
                             change.changedToUp() -> {
                                 onSeek(clamp(change.position.x / size.width, 0f, 1f))
                                 change.consume()
@@ -274,7 +270,7 @@ fun VoiceNote(
     var pull by remember { mutableFloatStateOf(0f) }
     var downX by remember { mutableFloatStateOf(0f) }
     var recordStartedAt by remember { mutableLongStateOf(0L) }
-    val recordingPulse = androidx.compose.runtime.rememberInfiniteTransition(label = "voice-note-recording-pulse")
+    val recordingPulse = androidx.compose.animation.core.rememberInfiniteTransition(label = "voice-note-recording-pulse")
     val dotAlpha by recordingPulse.animateFloat(1f, 0.25f, infiniteRepeatable(tween(1000), RepeatMode.Reverse), label = "voice-note-dot")
     val random = remember { Random(0x5EED) }
     val latestPhase by rememberUpdatedState(phase)
@@ -441,10 +437,6 @@ fun VoiceNote(
                                 val event = awaitPointerEvent()
                                 val change = event.changes.firstOrNull() ?: continue
                                 when {
-                                    change.changedToCanceled() -> {
-                                        if (latestPhase == VoicePhase.REC) end(false)
-                                        break
-                                    }
                                     change.changedToUp() -> {
                                         if (latestPhase == VoicePhase.REC) end(pull >= 1f)
                                         change.consume()

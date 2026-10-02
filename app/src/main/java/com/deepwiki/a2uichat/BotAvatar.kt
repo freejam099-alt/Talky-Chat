@@ -309,9 +309,6 @@ private fun DrawScope.drawBody(path: Path, palette: BotAvatarPalette, shading: S
     }
 
     if (shading == "fabric") {
-        // withDrawContext requires import - use DrawScope.clipPath alternative
-        val canvas = androidx.compose.ui.graphics.Canvas
-        // TODO: Fix clipPath - use basic drawLine without clipping for now
         {
             val strandCount = 28
             for (i in 0 until strandCount) {
@@ -457,8 +454,8 @@ fun BotAvatar(
         working -> sin((phase + seeded) * PI.toFloat() * 2f) * (10f * jumpSpin)
         else -> yaw
     }
-    val scaleX = 1f - (clickJump.value * .06f)
-    val scaleY = 1f + (jump * .005f) - (clickJump.value * .04f)
+    val baseScaleX = 1f - (clickJump.value * .06f)
+    val baseScaleY = 1f + (jump * .005f) - (clickJump.value * .04f)
 
     Box(
         modifier = modifier
@@ -467,8 +464,8 @@ fun BotAvatar(
                 translationY = -jumpPx
                 rotationZ = rotation + clickJump.value * jumpLean
                 rotationX = if (sleeping) 8f else 0f
-                scaleX = scaleX * if (working) .99f + .01f * sin(phase * 12f) else 1f
-                scaleY = scaleY * 1f
+                scaleX = baseScaleX * if (working) .99f + .01f * sin(phase * 12f) else 1f
+                scaleY = baseScaleY
             }
             .then(
                 if (interactive) Modifier.pointerInput(type, seed) {
@@ -477,8 +474,12 @@ fun BotAvatar(
             )
             .semantics { contentDescription = label },
     ) {
-        Canvas(modifier = Modifier.matchParentSize()) {
-            scale(androidx.compose.ui.unit.dp(size.minDimension.value).value / BODY_UNITS, pivot = Offset.Zero) {
+        Canvas(modifier = Modifier.matchParentSize().graphicsLayer {
+            transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 0f)
+            val unitScale = size.value / BODY_UNITS
+            scaleX = unitScale
+            scaleY = unitScale
+        }) {
                 val palette = if (color != null) avatarPalette(type, null, brightness, saturation).copy(body = color) else avatarPalette(type, null, brightness, saturation)
                 val effectiveInk = ink ?: if (luminance(palette.body) > .62f) Color(0xFF20242A) else Color.White
                 val shadowValue = shadow ?: if (shading == "fabric") 1.15f else .35f
@@ -488,7 +489,6 @@ fun BotAvatar(
                 val spreadValue = spread ?: if (shading == "fabric") 1.6f else 1.55f
                 drawBody(bodyPath, palette, shading.lowercase(), shadowValue, highlightValue, rimValue, spreadValue, roundness, lightValue)
                 drawFace(type, face.lowercase(), effectiveInk, lookX, lookY, sleeping, yaw * 8f)
-            }
         }
     }
 }

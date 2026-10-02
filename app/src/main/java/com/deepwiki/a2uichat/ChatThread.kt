@@ -302,8 +302,7 @@ fun A2UIChatThread(
                     }
                 }
 
-                androidx.compose.foundation.layout.Box(modifier = Modifier.weight(1f)) {
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility(
                     visible = showJump,
                     modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp),
                     enter = fadeIn() + slideInVertically { it / 2 } + scaleIn(initialScale = .94f),
@@ -325,7 +324,6 @@ fun A2UIChatThread(
                         }
                     }
                 }
-                } // close Box(weight)
             }
 
             if (composer) {
