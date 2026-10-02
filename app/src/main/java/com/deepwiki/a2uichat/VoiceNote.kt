@@ -46,10 +46,10 @@ import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.input.pointer.awaitEachGesture
-import androidx.compose.ui.input.pointer.awaitFirstDown
-import androidx.compose.ui.input.pointer.awaitPointerEvent
-import androidx.compose.ui.input.pointer.changedToCanceled
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitPointerEvent
+import androidx.compose.foundation.gestures.changedToCanceled
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.consume
 import androidx.compose.ui.input.pointer.pointerInput
@@ -406,10 +406,10 @@ fun VoiceNote(
             }
             .onPreviewKeyEvent { event ->
                 when {
-                    event.type == KeyEventType.KeyDown && (event.key == Key.Space || event.key == Key.Enter) && !event.isShiftPressed && phase == VoicePhase.IDLE -> {
+                    event.type == KeyEventType.KeyDown && (event.key == Key.DirectionLeft || event.key == Key.Enter) && !event.isShiftPressed && phase == VoicePhase.IDLE -> {
                         begin(); true
                     }
-                    event.type == KeyEventType.KeyUp && (event.key == Key.Space || event.key == Key.Enter) && phase == VoicePhase.REC -> {
+                    event.type == KeyEventType.KeyUp && (event.key == Key.DirectionLeft || event.key == Key.Enter) && phase == VoicePhase.REC -> {
                         end(false); true
                     }
                     event.type == KeyEventType.KeyDown && event.key == Key.Escape && phase == VoicePhase.REC -> {

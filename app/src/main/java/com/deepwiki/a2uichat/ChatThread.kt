@@ -302,6 +302,7 @@ fun A2UIChatThread(
                     }
                 }
 
+                Box(Modifier.weight(1f)) {
                 AnimatedVisibility(
                     visible = showJump,
                     modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp),
@@ -661,7 +662,7 @@ private fun Composer(
                 val ready = text.trim().isNotEmpty() || pendingFiles.isNotEmpty()
                 Surface(onClick = onSend, enabled = ready, shape = CircleShape, color = if (ready) MaterialTheme.colorScheme.primary else Color.Transparent) {
                     Box(modifier = Modifier.size(32.dp), contentAlignment = Alignment.Center) {
-                        AnimatedContent(targetState = sentCounter, label = "send-arrow", transitionSpec = { (slideInVertically { it } + fadeIn()) togetherWith (slideOutVertically { -it } + fadeOut()).using(SizeTransform(clip = false)) }) { _ ->
+                        AnimatedContent(targetState = sentCounter, label = "send-arrow", transitionSpec = { (slideInVertically { it } + fadeIn()) togetherWith (slideOutVertically { -it } + fadeOut()) }) { _ ->
                             Icon(painterResource(R.drawable.ic_super_send), contentDescription = "Send", tint = if (ready) MaterialTheme.colorScheme.onPrimary else Muted, modifier = Modifier.size(16.dp))
                         }
                     }

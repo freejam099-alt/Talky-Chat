@@ -18,7 +18,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.graphicsLayer
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -112,7 +112,7 @@ private fun parseColorOrNull(raw: String): Color? = runCatching {
 
 private fun buildBody(type: String, customPath: String? = null): Path = Path().apply {
     if (!customPath.isNullOrBlank()) {
-        addSvg(customPath)
+        addPath(androidx.compose.ui.graphics.PathParser().parsePathData(customPath).asComposablePath())
         return@apply
     }
     when (type.lowercase()) {
@@ -306,7 +306,8 @@ private fun DrawScope.drawBody(path: Path, palette: BotAvatarPalette, shading: S
     }
 
     if (shading == "fabric") {
-        androidx.compose.ui.graphics.drawscope.clipPath(path) {
+        androidx.compose.ui.graphics.drawscope.withDrawContext { ctx ->
+            ctx.clipPath(path)
             val strandCount = 28
             for (i in 0 until strandCount) {
                 val x = 15f + i * 2.6f
@@ -337,8 +338,8 @@ private fun DrawScope.drawFace(type: String, face: String, ink: Color, lookX: Fl
         else -> 9f
     }
     if (sleeping) {
-        drawLine(50f - eyeSep, eyeY, 50f - eyeSep + 5f, eyeY + 1.3f, color = ink, strokeWidth = 1.8f, cap = StrokeCap.Round)
-        drawLine(50f + eyeSep - 5f, eyeY + 1.3f, 50f + eyeSep, eyeY, color = ink, strokeWidth = 1.8f, cap = StrokeCap.Round)
+        drawLine(color = ink, start = Offset(50f - eyeSep, eyeY), end = Offset(50f - eyeSep + 5f, eyeY + 1.3f), strokeWidth = 1.8f, cap = StrokeCap.Round)
+        drawLine(color = ink, start = Offset(50f + eyeSep - 5f, eyeY + 1.3f), end = Offset(50f + eyeSep, eyeY), strokeWidth = 1.8f, cap = StrokeCap.Round)
     } else {
         drawEye(50f - eyeSep, eyeY, ink, lookX, lookY, type)
         drawEye(50f + eyeSep, eyeY, ink, lookX, lookY, type)
